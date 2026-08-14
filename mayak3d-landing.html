@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RawMesh — курс 3D-моделирования для подростков</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Rubik+Spray+Paint&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --blue: #1e3fe0;
+      --blue-deep: #0f1f8a;
+      --blue-pale: #5470f0;
+      --cone: #ff6a1a;
+      --cone-dark: #c74a0e;
+      --stripe: #f5f0e4;
+      --concrete: #adada6;
+      --ink: #0b0b0e;
+      --yellow: #ffd23f;
+      --asphalt: #17171b;
+      --asphalt-2: #222228;
+      --paper: #f5f0e4;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--asphalt);
+      color: var(--paper);
+      font-family: 'Rubik', sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Rubik', sans-serif;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .spray {
+      font-family: 'Rubik Spray Paint', sans-serif;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .hazard {
+      height: 14px;
+      background: repeating-linear-gradient(135deg, var(--yellow) 0 22px, var(--ink) 22px 44px);
+    }
+
+    /* ---------- NAV ---------- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--asphalt);
+      border-bottom: 3px solid var(--ink);
+    }
+
+    nav .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      gap: 10px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .logo-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--cone);
+      border: 3px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* lang switcher */
+    .lang-btn {
+      background: var(--asphalt-2);
+      color: var(--paper);
+      font-family: 'Rubik', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 8px 14px;
+      border: 2.5px solid rgba(245, 240, 228, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+
+    .lang-btn:hover {
+      border-color: var(--yellow);
+      background: rgba(255, 210, 63, 0.08);
+    }
+
+    .lang-btn.active {
+      background: var(--yellow);
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .nav-cta {
+      background: var(--yellow);
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 9px 16px;
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      transform: rotate(-2deg);
+      box-shadow: 3px 3px 0 var(--ink);
+      transition: transform .15s ease, box-shadow .15s ease;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .nav-cta:hover {
+      transform: rotate(0deg) translate(-2px, -2px);
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      position: relative;
+      background: radial-gradient(ellipse 90% 70% at 30% 20%, var(--blue-pale) 0%, var(--blue) 45%, var(--blue-deep) 100%);
+      padding: 52px 0 72px;
+      overflow: hidden;
+      border-bottom: 3px solid var(--ink);
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 44px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--yellow);
+      border: 2.5px solid var(--ink);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      transform: rotate(-1.5deg);
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 6vw, 78px);
+      color: var(--paper);
+      margin-bottom: 8px;
+      text-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .hero h1 .spray {
+      font-size: clamp(46px, 7.5vw, 96px);
+      color: var(--cone);
+      display: block;
+      -webkit-text-stroke: 2px var(--ink);
+      text-shadow: 4px 4px 0 var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(10, 10, 12, 0.28);
+      border: 3px solid rgba(245, 240, 228, 0.8);
+      border-radius: 999px;
+      padding: 8px 18px 8px 10px;
+      margin: 8px 0 18px;
+      transform: rotate(-2deg);
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--yellow), var(--cone));
+      border: 3px solid var(--ink);
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 18px;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .brand-name {
+      font-size: 17px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--paper);
+    }
+
+    .hero p.lede {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--paper);
+      max-width: 480px;
+      margin-bottom: 28px;
+      opacity: .92;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--cone);
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 14px 24px;
+      border: 3px solid var(--ink);
+      border-radius: 10px;
+      box-shadow: 5px 5px 0 var(--ink);
+      transition: transform .15s ease, box-shadow .15s ease;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 var(--ink);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 3px solid var(--paper);
+      color: var(--paper);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 13px 22px;
+      border-radius: 10px;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(245, 240, 228, 0.1);
+    }
+
+    /* ---------- hero visual slider ---------- */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slider-shell {
+      position: relative;
+      width: min(340px, 100%);
+      height: 520px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slider-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      perspective: 1400px;
+    }
+
+    /* --- art-style slide --- */
+    .slide {
+      position: absolute;
+      inset: 18px 14px;
+      border: 5px solid var(--ink);
+      border-radius: 4px;
+      overflow: visible;
+      background: #111;
+      box-shadow: 8px 8px 0 var(--ink);
+      opacity: 0;
+      transition: transform .75s cubic-bezier(.25, .8, .25, 1), opacity .75s ease, filter .75s ease;
+      filter: saturate(1.1) contrast(1.06);
+    }
+
+    .slide-img-wrap {
+      position: absolute;
+      inset: 0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    /* grain overlay */
+    .slide-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity: .5;
+    }
+
+    /* ---- corner tapes ---- */
+    .slide-tape {
+      position: absolute;
+      z-index: 10;
+      width: 68px;
+      height: 22px;
+      pointer-events: none;
+      background: linear-gradient(180deg,
+          rgba(255, 228, 130, 0.55) 0%,
+          rgba(255, 210, 63, 0.72) 48%,
+          rgba(230, 185, 40, 0.5) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.35);
+      border-bottom: 1px solid rgba(160, 120, 10, 0.3);
+      backdrop-filter: blur(1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+    }
+
+    .slide-tape.tl {
+      top: -4px;
+      left: -4px;
+      transform-origin: center center;
+      transform: rotate(-45deg) translateX(-14px);
+    }
+
+    .slide-tape.br {
+      bottom: -4px;
+      right: -4px;
+      transform-origin: center center;
+      transform: rotate(-45deg) translateX(14px);
+    }
+
+    .slide-tape::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg,
+          transparent 0px, transparent 3px,
+          rgba(255, 255, 255, 0.12) 3px, rgba(255, 255, 255, 0.12) 4px);
+    }
+
+    .slide.active .slide-tape.tl {
+      animation: tape-settle-tl .65s cubic-bezier(.2, .8, .3, 1) forwards;
+    }
+
+    .slide.active .slide-tape.br {
+      animation: tape-settle-br .65s cubic-bezier(.2, .8, .3, 1) .08s forwards;
+    }
+
+    .slide.prev .slide-tape,
+    .slide.next .slide-tape {
+      animation: tape-peel .4s ease forwards;
+    }
+
+    @keyframes tape-settle-tl {
+      0% {
+        transform: rotate(-65deg) translateX(-30px) scaleX(0.4);
+        opacity: 0;
+      }
+
+      55% {
+        transform: rotate(-40deg) translateX(-10px) scaleX(1.08);
+        opacity: 1;
+      }
+
+      100% {
+        transform: rotate(-45deg) translateX(-14px) scaleX(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes tape-settle-br {
+      0% {
+        transform: rotate(-25deg) translateX(30px) scaleX(0.4);
+        opacity: 0;
+      }
+
+      55% {
+        transform: rotate(-50deg) translateX(10px) scaleX(1.08);
+        opacity: 1;
+      }
+
+      100% {
+        transform: rotate(-45deg) translateX(14px) scaleX(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes tape-peel {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: rotate(-55deg) scaleX(0.3);
+      }
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) rotate(-1.5deg) scale(1);
+      z-index: 3;
+      animation: artpeel .85s cubic-bezier(.16, .85, .3, 1);
+    }
+
+    .slide.prev {
+      opacity: .4;
+      transform: translateX(-52px) rotate(-7deg) scale(.91);
+      z-index: 2;
+      filter: saturate(.5) brightness(.7);
+    }
+
+    .slide.next {
+      opacity: .4;
+      transform: translateX(52px) rotate(7deg) scale(.91);
+      z-index: 2;
+      filter: saturate(.5) brightness(.7);
+    }
+
+    @keyframes artpeel {
+      0% {
+        opacity: 0;
+        transform: translateX(70px) rotate(14deg) scale(.86);
+      }
+
+      35% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0) rotate(-1.5deg) scale(1);
+      }
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 0;
+      border: 3px solid var(--ink);
+      background: var(--yellow);
+      color: var(--ink);
+      font-size: 28px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 4px 4px 0 var(--ink);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .slider-arrow:hover {
+      transform: translateY(-50%) translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+
+    .slider-arrow.left {
+      left: -10px;
+    }
+
+    .slider-arrow.right {
+      right: -10px;
+    }
+
+    /* ---------- SECTIONS ---------- */
+    .section {
+      padding: 72px 0;
+    }
+
+    .section-head {
+      max-width: 600px;
+      margin-bottom: 44px;
+    }
+
+    .section-head .eyebrow {
+      background: var(--cone);
+      color: var(--ink);
+    }
+
+    .section-head h2 {
+      font-size: clamp(24px, 3.8vw, 42px);
+      color: var(--paper);
+    }
+
+    .section-head p {
+      color: var(--paper);
+      opacity: .75;
+      font-size: 16px;
+      margin-top: 12px;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .why-card {
+      background: var(--asphalt-2);
+      border: 3px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      position: relative;
+    }
+
+    .why-card::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 22px;
+      right: 22px;
+      height: 6px;
+      background: repeating-linear-gradient(135deg, var(--yellow) 0 10px, var(--ink) 10px 20px);
+      border-left: 3px solid var(--ink);
+      border-right: 3px solid var(--ink);
+    }
+
+    .why-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      border: 2.5px solid var(--ink);
+    }
+
+    .why-card h3 {
+      font-size: 17px;
+      color: var(--paper);
+      margin-bottom: 8px;
+    }
+
+    .why-card p {
+      font-size: 14px;
+      color: var(--paper);
+      opacity: .75;
+    }
+
+    /* ---------- CURRICULUM ---------- */
+    .path {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .stop {
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 18px;
+      padding: 18px 0;
+    }
+
+    .stop:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 27px;
+      top: 58px;
+      bottom: -18px;
+      width: 3px;
+      background: repeating-linear-gradient(to bottom, var(--yellow) 0 8px, var(--ink) 8px 16px);
+    }
+
+    .stop-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--cone);
+      border: 3px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    .stop-body h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--paper);
+      margin-bottom: 4px;
+    }
+
+    .stop-body p {
+      font-size: 14px;
+      color: var(--paper);
+      opacity: .75;
+    }
+
+    .stop-body .tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    /* ---------- INSTRUCTOR ---------- */
+    .instructor {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 32px;
+      align-items: center;
+      background: var(--asphalt-2);
+      border: 3px solid var(--ink);
+      border-radius: 20px;
+      padding: 36px;
+    }
+
+    .avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: var(--cone);
+      border: 4px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .avatar span {
+      font-weight: 900;
+      font-size: 34px;
+      color: var(--ink);
+    }
+
+    .instructor h3 {
+      font-size: 20px;
+      color: var(--paper);
+      margin-bottom: 10px;
+    }
+
+    .instructor p {
+      color: var(--paper);
+      opacity: .8;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    .badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--ink);
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    /* ---------- FINAL CTA ---------- */
+    .final-cta {
+      text-align: center;
+      background: var(--blue);
+      border: 3px solid var(--ink);
+      border-radius: 24px;
+      padding: 56px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(24px, 4vw, 40px);
+      color: var(--paper);
+      text-shadow: 2px 2px 0 var(--ink);
+      margin-bottom: 14px;
+    }
+
+    .final-cta p {
+      color: var(--paper);
+      opacity: .9;
+      max-width: 480px;
+      margin: 0 auto 28px;
+    }
+
+    .price-tag {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      background: var(--yellow);
+      border: 3px solid var(--ink);
+      border-radius: 12px;
+      padding: 12px 22px;
+      margin-bottom: 24px;
+      transform: rotate(-2deg);
+    }
+
+    .price {
+      font-weight: 900;
+      font-size: 32px;
+      color: var(--ink);
+    }
+
+    .price-old {
+      font-size: 15px;
+      color: var(--ink);
+      opacity: .6;
+      text-decoration: line-through;
+    }
+
+    footer {
+      padding: 32px 0 52px;
+      text-align: center;
+      color: var(--paper);
+      opacity: .65;
+      font-size: 13.5px;
+      line-height: 2;
+    }
+
+    footer a {
+      color: var(--cone);
+      font-weight: 800;
+      opacity: 1;
+    }
+
+    /* ========================
+     MOBILE RESPONSIVE
+  ======================== */
+    @media (max-width:860px) {
+      .hero {
+        padding: 40px 0 52px;
+      }
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+
+      .hero-inner>div:first-child {
+        text-align: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+      }
+
+      .hero p.lede {
+        margin: 0 auto 24px;
+        font-size: 16px;
+      }
+
+      .hero-ctas {
+        justify-content: center;
+      }
+
+      .brand-lockup {
+        display: inline-flex;
+      }
+
+      .hero-visual {
+        justify-content: center;
+      }
+
+      /* slider shrinks on mobile */
+      .slider-shell {
+        width: min(300px, calc(100% - 40px));
+        height: 440px;
+      }
+
+      .slider-arrow.left {
+        left: -6px;
+      }
+
+      .slider-arrow.right {
+        right: -6px;
+      }
+
+      .why-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .instructor {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 28px 20px;
+        gap: 20px;
+      }
+
+      .badges {
+        justify-content: center;
+      }
+
+      .section {
+        padding: 52px 0;
+      }
+
+      .section-head {
+        margin-bottom: 32px;
+      }
+
+      .final-cta {
+        padding: 44px 16px;
+        border-radius: 16px;
+      }
+
+      .stop {
+        grid-template-columns: 48px 1fr;
+        gap: 14px;
+      }
+
+      .stop-num {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
+    @media (max-width:480px) {
+      .logo {
+        font-size: 16px;
+      }
+
+      .nav-cta {
+        font-size: 12px;
+        padding: 8px 12px;
+      }
+
+      .lang-btn {
+        font-size: 12px;
+        padding: 7px 10px;
+      }
+
+      .hero h1 {
+        font-size: clamp(32px, 9vw, 48px);
+      }
+
+      .hero h1 .spray {
+        font-size: clamp(40px, 11vw, 60px);
+      }
+
+      .hero p.lede {
+        font-size: 15px;
+      }
+
+      .btn-primary,
+      .btn-ghost {
+        font-size: 14px;
+        padding: 12px 18px;
+      }
+
+      .slider-shell {
+        width: calc(100% - 36px);
+        height: 380px;
+      }
+
+      .slider-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+      }
+
+      .price {
+        font-size: 26px;
+      }
+
+      .stop-body h3 {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="wrap">
+      <div class="logo">
+        <div class="logo-badge">
+          <svg width="18" height="18" viewBox="0 0 20 20">
+            <polygon points="10,1 16,18 4,18" fill="#f5f0e4" stroke="#0b0b0e" stroke-width="1" />
+            <rect x="6" y="11" width="8" height="3" fill="#ff6a1a" />
+          </svg>
+        </div>
+        RawMesh
+      </div>
+      <div class="nav-right">
+        <button class="lang-btn active" id="btn-ru" onclick="setLang('ru')">РУ</button>
+        <button class="lang-btn" id="btn-kz" onclick="setLang('kz')">ҚАЗ</button>
+        <a class="nav-cta" href="#cta" data-ru="Записать ребёнка" data-kz="Баланы жазу">Записать ребёнка</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hazard"></div>
+
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div>
+        <span class="eyebrow" data-ru="● Курс 3D для подростков 11–17" data-kz="● 11–17 жас жасөспірімдерге 3D курсы">●
+          Курс 3D для подростков 11–17</span>
+        <h1><span class="spray">RawMesh</span><span data-ru="твоя мастерская в 3D" data-kz="сенің 3D шеберханаң">твоя
+            мастерская в 3D</span></h1>
+        <div class="brand-lockup">
+          <div class="brand-mark">R</div>
+          <span class="brand-name">RawMesh</span>
+        </div>
+        <p class="lede"
+          data-ru="8 занятий в Blender: превращаем идею со двора в собственную 3D-модель. От первого кубика до готовой анимированной сцены — на реальных, узнаваемых образах, а не на скучных учебных примерах."
+          data-kz="Blender-дегі 8 сабақ: аулаңдағы идеяны өз 3D-моделіңе айналдырамыз. Бірінші кубиктен дайын анимациялық сахнаға дейін — нақты, таныс бейнелерде, жалықтыратын оқулық мысалдарда емес.">
+          8 занятий в Blender: превращаем идею со двора в собственную 3D-модель. От первого кубика до готовой
+          анимированной сцены — на реальных, узнаваемых образах, а не на скучных учебных примерах.</p>
+        <div class="hero-ctas">
+          <a class="btn-primary" href="#cta" data-ru="Бесплатное пробное занятие"
+            data-kz="Тегін сынақ сабағы">Бесплатное пробное занятие</a>
+          <a class="btn-ghost" href="#curriculum" data-ru="Программа курса" data-kz="Курс бағдарламасы">Программа
+            курса</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="slider-shell">
+          <button class="slider-arrow left" type="button" aria-label="Предыдущий слайд">‹</button>
+          <div class="slider-stage" aria-live="polite">
+            <div class="slide active">
+              <div class="slide-tape tl"></div>
+              <div class="slide-tape br"></div>
+              <div class="slide-img-wrap"><img src="site1.png" alt=""></div>
+            </div>
+            <div class="slide next">
+              <div class="slide-tape tl"></div>
+              <div class="slide-tape br"></div>
+              <div class="slide-img-wrap"><img src="Снимок экрана 2026-08-14 150802.png" alt=""></div>
+            </div>
+            <div class="slide prev">
+              <div class="slide-tape tl"></div>
+              <div class="slide-tape br"></div>
+              <div class="slide-img-wrap"><img src="Снимок экрана 2026-08-14 151226.png" alt=""></div>
+            </div>
+          </div>
+          <button class="slider-arrow right" type="button" aria-label="Следующий слайд">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="hazard"></div>
+
+  <section class="section wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-ru="Зачем это ребёнку" data-kz="Бала үшін не үшін">Зачем это ребёнку</span>
+      <h2 data-ru="Не абстрактный урок — реальный навык на реальных образах"
+        data-kz="Абстрактты сабақ емес — нақты бейнелердегі нақты дағды">Не абстрактный урок — реальный навык на
+        реальных образах</h2>
+      <p data-ru="Учим видеть форму и объём в обычных вещах вокруг — и превращать это в готовую 3D-модель, которую можно показать, а не просто «прошёл курс»."
+        data-kz="Айналамыздағы қарапайым заттардағы пішін мен көлемді көруді үйретеміз — және оны дайын 3D-моделге айналдырамыз, оны «курстан өттім» деп ғана емес, көрсетуге болады.">
+        Учим видеть форму и объём в обычных вещах вокруг — и превращать это в готовую 3D-модель, которую можно показать,
+        а не просто «прошёл курс».</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon" style="background:var(--cone);"><svg width="20" height="20" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <h3 data-ru="Дизайн-мышление" data-kz="Дизайн-ойлау">Дизайн-мышление</h3>
+        <p data-ru="Ребёнок учится замечать форму, пропорции и цвет в обычных предметах — и превращать это в собственную идею."
+          data-kz="Бала қарапайым заттардағы пішін, пропорция және түсті байқауды үйренеді — және оны өз идеясына айналдырады.">
+          Ребёнок учится замечать форму, пропорции и цвет в обычных предметах — и превращать это в собственную идею.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:var(--yellow);"><svg width="20" height="20" viewBox="0 0 20 20">
+            <rect x="3" y="3" width="14" height="14" fill="#0b0b0e" />
+          </svg></div>
+        <h3 data-ru="Бесплатный инструмент" data-kz="Тегін құрал">Бесплатный инструмент</h3>
+        <p data-ru="Blender — профессиональный редактор, которым пользуются студии, и он полностью бесплатный для ребёнка."
+          data-kz="Blender — студиялар пайдаланатын кәсіби редактор, және ол бала үшін толығымен тегін.">Blender —
+          профессиональный редактор, которым пользуются студии, и он полностью бесплатный для ребёнка.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:var(--concrete);"><svg width="20" height="20" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="8" fill="#0b0b0e" />
+          </svg></div>
+        <h3 data-ru="Портфолио с 1-го месяца" data-kz="1-ші айдан портфолио">Портфолио с 1-го месяца</h3>
+        <p data-ru="После курса остаются собственные готовые модели и рендеры — то, что можно показать друзьям и сохранить."
+          data-kz="Курстан кейін өз дайын модельдері мен рендерлері қалады — достарына көрсетуге және сақтауға болатын нәрсе.">
+          После курса остаются собственные готовые модели и рендеры — то, что можно показать друзьям и сохранить.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="curriculum">
+    <div class="section-head">
+      <span class="eyebrow" data-ru="Маршрут курса" data-kz="Курс бағдары">Маршрут курса</span>
+      <h2 data-ru="8 занятий — от своей идеи до готовой 3D-сцены"
+        data-kz="8 сабақ — өз идеяңнан дайын 3D-сахнаға дейін">8 занятий — от своей идеи до готовой 3D-сцены</h2>
+      <p data-ru="Со 2-го занятия ребёнок работает над собственным проектом, который сам придумал. Каждое занятие — 45–60 минут, группы до 5 человек или индивидуально."
+        data-kz="2-ші сабақтан бастап бала өзі ойлап тапқан жобасымен жұмыс істейді. Әрбір сабақ — 45–60 минут, 5 адамға дейінгі топтар немесе жеке.">
+        Со 2-го занятия ребёнок работает над собственным проектом, который сам придумал. Каждое занятие — 45–60 минут,
+        группы до 5 человек или индивидуально.</p>
+    </div>
+    <div class="path">
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Знакомство с Blender" data-kz="Blender-мен танысу">Знакомство с Blender</h3>
+          <p data-ru="Интерфейс, навигация, что такое 3D вообще — без давления «сделай красиво», просто разминка."
+            data-kz="Интерфейс, навигация, 3D дегеніміз не — «әдемі жаса» деген қысымсыз, жай жылыну.">Интерфейс,
+            навигация, что такое 3D вообще — без давления «сделай красиво», просто разминка.</p><span class="tag"
+            data-ru="Результат: первая простая фигура" data-kz="Нәтиже: бірінші қарапайым фигура">Результат: первая
+            простая фигура</span>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Основы дизайна: референсы и палитра" data-kz="Дизайн негіздері: референстер мен палитра">Основы
+            дизайна: референсы и палитра</h3>
+          <p data-ru="Ребёнок выбирает тему своего проекта, собирает референсы и составляет цветовую палитру — с этого занятия начинается работа над своим проектом."
+            data-kz="Бала өз жобасының тақырыбын таңдайды, референстер жинайды және түс палитрасын жасайды — бұл сабақтан өз жобасы бойынша жұмыс басталады.">
+            Ребёнок выбирает тему своего проекта, собирает референсы и составляет цветовую палитру — с этого занятия
+            начинается работа над своим проектом.</p><span class="tag" data-ru="Результат: мудборд и палитра проекта"
+            data-kz="Нәтиже: жобаның мудборды мен палитрасы">Результат: мудборд и палитра проекта</span>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Инструменты моделирования" data-kz="Модельдеу құралдары">Инструменты моделирования</h3>
+          <p data-ru="Extrude, bevel и другие базовые операции — сразу применяем к своему объекту по референсу с занятия 2."
+            data-kz="Extrude, bevel және басқа негізгі операциялар — бірден 2-ші сабақтан референс бойынша өз объектіге қолданамыз.">
+            Extrude, bevel и другие базовые операции — сразу применяем к своему объекту по референсу с занятия 2.</p>
+          <span class="tag" data-ru="Результат: черновая форма своей модели"
+            data-kz="Нәтиже: өз моделінің қарапайым пішіні">Результат: черновая форма своей модели</span>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Модификаторы" data-kz="Модификаторлар">Модификаторы</h3>
+          <p data-ru="Mirror и Subdivision — симметрия и сглаживание, применяем к своей модели."
+            data-kz="Mirror және Subdivision — симметрия мен тегістеу, өз моделіне қолданамыз.">Mirror и Subdivision —
+            симметрия и сглаживание, применяем к своей модели.</p><span class="tag"
+            data-ru="Результат: доработанная форма" data-kz="Нәтиже: жетілдірілген пішін">Результат: доработанная
+            форма</span>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Материалы и цвет" data-kz="Материалдар мен түс">Материалы и цвет</h3>
+          <p data-ru="Красим модель по палитре, выбранной на занятии 2 — здесь она наконец «выстреливает»."
+            data-kz="Моделді 2-ші сабақта таңдалған палитра бойынша бояймыз — мұнда ол ақырында «жарылады».">Красим
+            модель по палитре, выбранной на занятии 2 — здесь она наконец «выстреливает».</p><span class="tag"
+            data-ru="Результат: цветная модель" data-kz="Нәтиже: түрлі-түсті модель">Результат: цветная модель</span>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Свет и композиция" data-kz="Жарық пен композиция">Свет и композиция</h3>
+          <p data-ru="Собираем сцену вокруг своего объекта — не абстрактную, а именно под свой проект."
+            data-kz="Өз объектімізге сахна жинаймыз — абстрактты емес, нақты өз жобамызға арнап.">Собираем сцену вокруг
+            своего объекта — не абстрактную, а именно под свой проект.</p><span class="tag"
+            data-ru="Результат: готовая сцена" data-kz="Нәтиже: дайын сахна">Результат: готовая сцена</span>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Простая анимация" data-kz="Қарапайым анимация">Простая анимация</h3>
+          <p data-ru="Ключевые кадры — оживляем свой объект." data-kz="Кілттік кадрлар — өз объектімізді тіріндіреміз.">
+            Ключевые кадры — оживляем свой объект.</p><span class="tag" data-ru="Результат: анимация своей модели"
+            data-kz="Нәтиже: өз моделінің анимациясы">Результат: анимация своей модели</span>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-num"><svg width="22" height="22" viewBox="0 0 20 20">
+            <polygon points="10,2 16,18 4,18" fill="#0b0b0e" />
+          </svg></div>
+        <div class="stop-body">
+          <h3 data-ru="Финальный рендер и демо-день" data-kz="Финалдық рендер және демо-күн">Финальный рендер и
+            демо-день</h3>
+          <p data-ru="Настраиваем финальную картинку, показ работ — каждый уходит с уникальным результатом, не копией чужого."
+            data-kz="Финалдық суретті реттейміз, жұмыстарды көрсетеміз — әркім өзгенің көшірмесі емес, бірегей нәтижемен кетеді.">
+            Настраиваем финальную картинку, показ работ — каждый уходит с уникальным результатом, не копией чужого.</p>
+          <span class="tag" data-ru="Результат: портфолио-рендер" data-kz="Нәтиже: портфолио-рендер">Результат:
+            портфолио-рендер</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="instructor">
+      <div class="avatar"><span>СБ</span></div>
+      <div>
+        <span class="eyebrow" style="background:var(--yellow); color:var(--ink);" data-ru="Преподаватель"
+          data-kz="Оқытушы">Преподаватель</span>
+        <h3>Санжар Бидаулет</h3>
+        <p data-ru="Студент компьютерных наук, автор собственных стилизованных 3D-работ в Blender (Cycles / Eevee, фристайл-обводка, анимация). Веду занятия сам — просто, по делу, без лишней теории."
+          data-kz="Информатика студенті, Blender-дегі өз стильдендірілген 3D-жұмыстарының авторы (Cycles / Eevee, фристайл-обводка, анимация). Сабақтарды өзім жүргіземін — қарапайым, нақты, артық теориясыз.">
+          Студент компьютерных наук, автор собственных стилизованных 3D-работ в Blender (Cycles / Eevee,
+          фристайл-обводка, анимация). Веду занятия сам — просто, по делу, без лишней теории.</p>
+        <div class="badges">
+          <span class="badge">Blender · 3D</span>
+          <span class="badge" data-ru="Свои работы в портфолио" data-kz="Портфолиодағы өз жұмыстары">Свои работы в
+            портфолио</span>
+          <span class="badge">CS-факультет</span>
+          <a class="badge" href="https://t.me/san777bit" target="_blank" rel="noopener"
+            style="color:var(--ink); text-decoration:none;">✈ @san777bit</a>
+          <a class="badge" href="https://wa.me/77471029179" target="_blank" rel="noopener"
+            style="color:var(--ink); text-decoration:none;">📱 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="cta">
+    <div class="final-cta">
+      <h2 data-ru="Первое занятие — бесплатно" data-kz="Бірінші сабақ — тегін">Первое занятие — бесплатно</h2>
+      <p data-ru="Покажем ребёнку, что такое 3D-моделирование, за одно пробное занятие — без риска и обязательств."
+        data-kz="Бір сынақ сабағында балаға 3D-модельдеу дегеніміз не екенін көрсетеміз — тәуекелсіз және міндеттемесіз.">
+        Покажем ребёнку, что такое 3D-моделирование, за одно пробное занятие — без риска и обязательств.</p>
+      <div class="price-tag">
+        <span class="price" data-ru="от 10 000 ₸" data-kz="10 000 ₸-дан">от 10 000 ₸</span>
+      </div>
+      <br>
+      <a class="btn-primary" href="https://wa.me/77471029179" target="_blank" rel="noopener"
+        data-ru="Записаться на пробное занятие" data-kz="Сынақ сабағына жазылу">Записаться на пробное занятие</a>
+    </div>
+  </section>
+
+  <div class="hazard"></div>
+
+  <footer>
+    <div class="wrap">
+      RawMesh · <span data-ru="курс 3D-моделирования для подростков"
+        data-kz="жасөспірімдерге арналған 3D-модельдеу курсы">курс 3D-моделирования для подростков</span> ·
+      Казахстан<br>
+      <span data-ru="Преподаватель:" data-kz="Оқытушы:">Преподаватель:</span> Санжар Бидаулет &nbsp;·&nbsp;
+      <a href="https://t.me/san777bit" target="_blank" rel="noopener">✈ @san777bit</a>
+      &nbsp;·&nbsp;
+      <a href="https://wa.me/77471029179" target="_blank" rel="noopener">📱 WhatsApp</a>
+    </div>
+  </footer>
+
+  <script>
+    /* ---------- SLIDER ---------- */
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const prevBtn = document.querySelector('.slider-arrow.left');
+    const nextBtn = document.querySelector('.slider-arrow.right');
+    let current = 0;
+
+    function updateSlider(index) {
+      const total = slides.length;
+      current = (index + total) % total;
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev', 'next');
+        if (i === current) slide.classList.add('active');
+        else if (i === (current - 1 + total) % total) slide.classList.add('prev');
+        else if (i === (current + 1) % total) slide.classList.add('next');
+      });
+    }
+
+    prevBtn.addEventListener('click', () => updateSlider(current - 1));
+    nextBtn.addEventListener('click', () => updateSlider(current + 1));
+    setInterval(() => updateSlider(current + 1), 4200);
+
+    /* ---------- LANGUAGE SWITCHER ---------- */
+    let lang = 'ru';
+
+    function setLang(l) {
+      lang = l;
+      document.documentElement.lang = l === 'kz' ? 'kk' : 'ru';
+
+      // toggle button styles
+      document.getElementById('btn-ru').classList.toggle('active', l === 'ru');
+      document.getElementById('btn-kz').classList.toggle('active', l === 'kz');
+
+      // update all elements with data-ru / data-kz
+      document.querySelectorAll('[data-ru]').forEach(el => {
+        const val = el.getAttribute('data-' + l);
+        if (val) {
+          // links: update href-less content, keep href intact
+          if (el.tagName === 'A' || el.tagName === 'BUTTON') {
+            el.textContent = val;
+          } else {
+            el.textContent = val;
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>
